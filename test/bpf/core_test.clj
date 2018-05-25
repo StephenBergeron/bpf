@@ -11,8 +11,8 @@
 (deftest bj-file-length
   (testing (is (< 5 (.length bj-file)))))
 
-(deftest bj-count
-  (testing (is (< 0 (count bj)))))
+(deftest bj-has-tsv-content
+  (testing (is (< 0 (count (tsv bj-file-name))))))
 
 (deftest startdtm-count
   (testing (is (< 0 (count startdtm)))))

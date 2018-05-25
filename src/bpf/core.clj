@@ -2,19 +2,26 @@
   (:gen-class)
   (:require [clojure-csv.core :as clojure-csv.core]))
 
-(defn nth-colum
-  [tabl column]
-  (remove nil? (map (fn [x] (nth x column nil)) tabl)))
-
 (def bj-file-name
   (str "/home/stn/cache/wfm87/" "53568.dat"))
 
-(def bj
-  (clojure-csv.core/parse-csv (slurp bj-file-name) :delimiter \tab))
+(defn tsv
+  [fname]
+  (clojure-csv.core/parse-csv (slurp fname) :delimiter \tab))
 
-(def startdtm (nth-colum bj 17))
-(def enddtm (nth-colum bj 15))
-(def launchdtm (nth-colum bj 3))
+(defn nth-colum
+  [fname column]
+  (let [tabl (tsv fname)]
+    (remove nil? (map (fn [x] (nth x column nil)) tabl))))
+
+(defn to-epoch
+  [s]
+  (.getTime (.parse (java.text.SimpleDateFormat. "yyyy-MM-dd HH:mm:ss") s)))
+
+(def requestnm (nth-colum bj-file-name 2))
+(def startdtm (map to-epoch (nth-colum bj-file-name 17)))
+(def enddtm (map to-epoch (nth-colum bj-file-name 15)))
+(def launchdtm (map to-epoch (nth-colum bj-file-name 3)))
 
 (defn -main
   "I don't do a whole lot ... yet."
