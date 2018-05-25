@@ -17,6 +17,12 @@
 (deftest startdtm-count
   (testing (is (< 0 (count startdtm)))))
 
+(deftest startdtm-type
+  (testing
+      (is (= clojure.lang.ArraySeq (type startdtm)))
+    (is (= java.lang.Long (type (first startdtm))))
+    ))
+
 ;; (deftest content-valid
 ;;   (testing (is (= "hello" enddtm ))))
 
