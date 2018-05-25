@@ -17,7 +17,7 @@
       [dom cnt]
       (let [c  (pick-start? s e)
             lastcnt (cond (empty? cnt) 0 :else (last cnt))
-            newcnt  (cond c (+ 1 lastcnt) :else (- lastcnt 1))
+            newcnt  (cond c (+ lastcnt 1) :else (- lastcnt 1))
             newdom  (cond c (first s) :else (first e))
             s-new   (cond c (drop 1 s) :else s)
             e-new   (cond c e :else (drop 1 e))]
