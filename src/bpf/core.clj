@@ -9,7 +9,7 @@
   [fname]
   (clojure-csv.core/parse-csv (slurp fname) :delimiter \tab))
 
-(defn nth-colum
+(defn nth-column
   [fname column]
   (let [tabl (tsv fname)]
     (remove nil? (map (fn [x] (nth x column nil)) tabl))))
@@ -18,10 +18,10 @@
   [s]
   (.getTime (.parse (java.text.SimpleDateFormat. "yyyy-MM-dd HH:mm:ss") s)))
 
-(def requestnm (nth-colum bj-file-name 2))
-(def startdtm (map to-epoch (nth-colum bj-file-name 17)))
-(def enddtm (map to-epoch (nth-colum bj-file-name 15)))
-(def launchdtm (map to-epoch (nth-colum bj-file-name 3)))
+(def requestnm (nth-column bj-file-name 2))
+(def startdtm (sort (map to-epoch (nth-column bj-file-name 17))))
+(def enddtm (sort (map to-epoch (nth-column bj-file-name 15))))
+(def launchdtm (sort (map to-epoch (nth-column bj-file-name 3))))
 
 (defn -main
   "I don't do a whole lot ... yet."
