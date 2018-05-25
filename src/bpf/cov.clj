@@ -2,9 +2,10 @@
 
 ;; assume both list are sorted
 (defn pick-start? [s e]
-  (let [min-start (first s)
-        min-end   (first e)]
-    (< min-start min-end)))
+  (cond
+    (empty? e) true
+    (empty? s) false
+    :else (< (first s) (first e))))
 
 (defn covify
   [si ei]
@@ -12,11 +13,11 @@
          cnt []
          s   si
          e   ei]
-    (if (empty? s)
+    (if (and (empty? s) (empty? e))
       [dom cnt]
-      (let [c (pick-start? s e)
+      (let [c  (pick-start? s e)
             lastcnt (cond (empty? cnt) 0 :else (last cnt))
-            newcnt  (cond c (+ 1 lastcnt) :else (- 1 lastcnt))
+            newcnt  (cond c (+ 1 lastcnt) :else (- lastcnt 1))
             newdom  (cond c (first s) :else (first e))
             s-new   (cond c (drop 1 s) :else s)
             e-new   (cond c e :else (drop 1 e))]

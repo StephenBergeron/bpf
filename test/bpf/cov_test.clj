@@ -28,12 +28,18 @@
   (t/testing (t/is (= true (sut/pick-start? s1 e1)))))
 
 (t/deftest pick-start?-53cli-2
+  (t/testing (t/is (= true (sut/pick-start? s1 e0)))))
+
+(t/deftest pick-start?-53cli-3
+  (t/testing (t/is (= false (sut/pick-start? s0 e1)))))
+
+(t/deftest pick-start?-53cli-4
   (t/testing (t/is (= false (sut/pick-start? (drop 1 s1) e1)))))
 
 
 ;; -----
 ;; c9dpq
-;; If start or end are empty return the domain and cov data
+;; Edge case where start or end are empty
 
 (t/deftest covify-c9dpq-1
   (let [t (sut/covify s0 e0)]
@@ -41,8 +47,8 @@
 
 (t/deftest covify-c9dpq-3
   (let [t (sut/covify s1 e0)]
-    (t/testing (t/is (= [[] []] t)))))
+    (t/testing (t/is (= [[0 10 20] [1 2 3]] t)))))
 
 (t/deftest covify-c9dpq-4
   (let [t (sut/covify s0 e1)]
-    (t/testing (t/is (= [[] []] t)))))
+    (t/testing (t/is (= [[5 15 25] [-1 -2 -3]] t)))))
