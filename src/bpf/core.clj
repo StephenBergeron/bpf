@@ -34,17 +34,20 @@
 (def waiting (cov/covify launchdtm startdtm))
 (def inproc  (cov/covify startdtm  enddtm))
 
+(defn- dump-to-csv
+  [cov fname]
+  (let [[dom cnt] cov
+        tovec     (map vector dom cnt)
+        csv       (string/join "\n" (map (fn [x] (string/join "," x)) tovec))]
+    (println (str "bpf generate " fname))
+    (println csv)
+    (with-open
+      [w (clojure.java.io/writer
+          (str dat/data-dir "/" fname)
+          :append false)]
+           (.write w csv))))
+
 (defn -main
   [& args]
   (println (str "Processing " dat/bj-file-name))
-  (let [[dom cnt] (cov/covify startdtm enddtm)
-        tovec     (map vector dom cnt)
-        csv       (string/join "\n" (map (fn [x] (string/join "," x)) tovec))
-        ]
-    (clojure.pprint/pprint (type tovec))
-    (clojure.pprint/pprint (type (last tovec)))
-    (println csv)
-    (with-open
-           [w (clojure.java.io/writer "/tmp/tmp.csv" :append false)]
-           (.write w csv))
-    ))
+  (dump-to-csv inproc "bj_proc.csv"))
