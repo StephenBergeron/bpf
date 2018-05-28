@@ -1,6 +1,7 @@
 (ns bpf.core
   (:gen-class)
   (:require [clojure-csv.core :as clojure-csv.core]
+            [clojure.string :as string]
             [clojure.pprint]
             [bpf.cov :as cov]
             [bpf.dat :as dat]))
@@ -18,7 +19,12 @@
 
 (defn to-epoch
   [s]
-  (.getTime (.parse (java.text.SimpleDateFormat. "yyyy-MM-dd HH:mm:ss") s)))
+  (let [ms (.getTime
+            (.parse
+             (java.text.SimpleDateFormat.
+              "yyyy-MM-dd HH:mm:ss") s))]
+    (/ ms 1000))
+  )
 
 (def requestnm (nth-column dat/bj-file-name 2))
 (def startdtm (sort (map to-epoch (nth-column dat/bj-file-name 17))))
@@ -31,5 +37,14 @@
 (defn -main
   [& args]
   (println (str "Processing " dat/bj-file-name))
-  (let [[dom cnt] (cov/covify startdtm enddtm)]
-    (clojure.pprint/pprint (map vector dom cnt))))
+  (let [[dom cnt] (cov/covify startdtm enddtm)
+        tovec     (map vector dom cnt)
+        csv       (string/join "\n" (map (fn [x] (string/join "," x)) tovec))
+        ]
+    (clojure.pprint/pprint (type tovec))
+    (clojure.pprint/pprint (type (last tovec)))
+    (println csv)
+    (with-open
+           [w (clojure.java.io/writer "/tmp/tmp.csv" :append false)]
+           (.write w csv))
+    ))

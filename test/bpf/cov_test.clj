@@ -4,8 +4,8 @@
 
 (def ^{:private true} s1   '(0     10    20))
 (def ^{:private true} e1   '(   5     15    25))
-(def ^{:private true} dom1 [0  5  10 15 20 25])
-(def ^{:private true} cov1 [1  0   1  0  1  0])
+(def ^{:private true} dom1 [0 0 5 5 10 10 15 15 20 20 25 25])
+(def ^{:private true} cov1 [0 1 1 0  0  1  1  0  0  1  1  0])
 
 
 (def ^{:private true} s0 (empty s1))
@@ -47,8 +47,8 @@
 
 (t/deftest covify-c9dpq-3
   (let [t (sut/covify s1 e0)]
-    (t/testing (t/is (= [[0 10 20] [1 2 3]] t)))))
+    (t/testing (t/is (= [[0 0 10 10 20 20] [0 1   1 2   2 3]] t)))))
 
 (t/deftest covify-c9dpq-4
   (let [t (sut/covify s0 e1)]
-    (t/testing (t/is (= [[5 15 25] [-1 -2 -3]] t)))))
+    (t/testing (t/is (= [[5 5 15 15 25 25] [0 -1  -1 -2  -2 -3]] t)))))

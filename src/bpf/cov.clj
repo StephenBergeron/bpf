@@ -21,6 +21,9 @@
             newdom  (cond c (first s) :else (first e))
             s-new   (cond c (drop 1 s) :else s)
             e-new   (cond c e :else (drop 1 e))]
-        (recur (conj dom newdom) (conj cnt newcnt) s-new e-new)
+        (recur
+         (conj (conj dom newdom) newdom)
+         (conj (conj cnt lastcnt) newcnt)
+         s-new e-new)
         )
       )))

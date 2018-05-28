@@ -5,7 +5,7 @@
             [clojure.string :as string]))
 
                                         ; directory to use
-(def ^{:private true} data-dir
+(def data-dir
   (str (System/getenv "CACHEDIR") "/" (System/getenv "simulation")))
 
                                         ; all .dat files in that directory
