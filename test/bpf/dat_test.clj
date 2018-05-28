@@ -10,3 +10,7 @@
 
 (t/deftest bj-file-length
   (t/testing (t/is (< 5 (.length bj-file)))))
+
+(t/deftest candidates-length
+  (clojure.pprint/pprint sut/candidates)
+  (t/testing (t/is (= 4 (count sut/candidates)))))
