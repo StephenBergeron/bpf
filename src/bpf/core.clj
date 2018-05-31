@@ -6,13 +6,13 @@
             [bpf.cov :as cov]
             [bpf.dat :as dat]))
 
-(defn tsv
+(defn parse-tsv
   [fname]
   (clojure-csv.core/parse-csv (slurp fname) :delimiter \tab))
 
 (defn nth-column
   [fname column]
-  (let [tabl    (tsv fname)
+  (let [tabl    (parse-tsv fname)
         raw-col (map (fn [x] (nth x column nil)) tabl)
         processed (remove (fn [x] (= "\\N" x)) raw-col)]
     (remove nil? processed)))
@@ -23,8 +23,7 @@
             (.parse
              (java.text.SimpleDateFormat.
               "yyyy-MM-dd HH:mm:ss") s))]
-    (/ ms 1000))
-  )
+    (/ ms 1000)))
 
 (def requestnm (nth-column dat/bj-file-name 2))
 (def startdtm (sort (map to-epoch (nth-column dat/bj-file-name 17))))

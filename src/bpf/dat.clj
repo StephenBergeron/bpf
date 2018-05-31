@@ -8,9 +8,10 @@
 (def data-dir
   (str (System/getenv "CACHEDIR") "/" (System/getenv "simulation")))
 
-                                        ; all .dat files in that directory
-(def candidates
-  (sort (filter (fn [x] (string/ends-with? x ".dat")) (.list (io/file data-dir)))))
+(def dat-files
+  (sort (filter
+         (fn [x] (string/ends-with? x ".dat"))
+         (.list (io/file data-dir)))))
 
 (def bj-file-name
-  (str data-dir "/" (first candidates)))
+  (str data-dir "/" (first dat-files)))

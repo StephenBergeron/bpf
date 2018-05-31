@@ -1,6 +1,6 @@
 (defproject bpf "0.1.0-SNAPSHOT"
   :description "Simple utility tool for processing bpf data in TSV format"
-  :url "http://too.poor.com/FIXME"
+  :url "http://too.poor.com/"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.9.0"]

@@ -13,7 +13,7 @@
     ))
 
 (t/deftest bj-has-tsv-content
-  (t/testing (t/is (< 0 (count (sut/tsv dat/bj-file-name))))))
+  (t/testing (t/is (< 0 (count (sut/parse-tsv dat/bj-file-name))))))
 
 ;; (deftest content-valid
 ;;   (testing (is (= "hello" enddtm ))))

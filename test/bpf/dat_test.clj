@@ -11,6 +11,7 @@
 (t/deftest bj-file-length
   (t/testing (t/is (< 5 (.length bj-file)))))
 
-(t/deftest candidates-length
-  (clojure.pprint/pprint sut/candidates)
-  (t/testing (t/is (= 4 (count sut/candidates)))))
+(t/deftest dat-files-length
+  (println "dat-files for bj:")
+  (clojure.pprint/pprint sut/dat-files)
+  (t/testing (t/is (= 4 (count sut/dat-files)))))
