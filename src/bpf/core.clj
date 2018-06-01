@@ -19,25 +19,29 @@
 (defn enddtm     [bj-file-name] (sort (map to-epoch (tsv/nth-column bj-file-name 15))))
 (defn launchdtm  [bj-file-name] (sort (map to-epoch (tsv/nth-column bj-file-name 3))))
 
-(defn waiting [bj-file-name] (cov/covify (launchdtm bj-file-name) (startdtm bj-file-name)))
-(defn inproc  [bj-file-name] (cov/covify (startdtm bj-file-name)  (enddtm bj-file-name)))
-
-(defn- dump-to-csv
-  [cov data-dir fname]
-  (let [[dom cnt] cov
+(defn- to-csv
+  [infile outfile]
+  (let [waiting   (cov/covify (launchdtm infile) (startdtm infile))
+        inproc    (cov/covify (startdtm infile)  (enddtm infile))
+        [dom cnt] inproc ;; waiting
         tovec     (map vector dom cnt)
         csv       (string/join "\n" (map (fn [x] (string/join "," x)) tovec))]
-    (println (str "bpf generate " fname))
+    (println (str "bpf generate " outfile))
     (println csv)
     (with-open
       [w (clojure.java.io/writer
-          (str data-dir "/" fname)
+          outfile
           :append false)]
            (.write w csv))))
 
 (defn -main
   [& args]
-  (println "FIXME :/")
-  ;(println (str "Processing " DATA_DIR_HERE BJ_FILE_NAME_HERE))
+  (clojure.pprint/pprint args)
+  (cond
+
+    (= 2 (count args) ) (to-csv (first args) (second args))
+
+    :else              (println "please specify input and output files"))
+
   ;(dump-to-csv inproc DATA_DIR_HERE BJ_FILE_NAME_HERE)
   )
