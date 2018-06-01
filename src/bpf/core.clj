@@ -25,16 +25,16 @@
               "yyyy-MM-dd HH:mm:ss") s))]
     (/ ms 1000)))
 
-(def requestnm (nth-column dat/bj-file-name 2))
-(def startdtm (sort (map to-epoch (nth-column dat/bj-file-name 17))))
-(def enddtm (sort (map to-epoch (nth-column dat/bj-file-name 15))))
-(def launchdtm (sort (map to-epoch (nth-column dat/bj-file-name 3))))
+(defn requestnm  [bj-file-name] (nth-column bj-file-name 2))
+(defn startdtm   [bj-file-name] (sort (map to-epoch (nth-column bj-file-name 17))))
+(defn enddtm     [bj-file-name] (sort (map to-epoch (nth-column bj-file-name 15))))
+(defn launchdtm  [bj-file-name] (sort (map to-epoch (nth-column bj-file-name 3))))
 
-(def waiting (cov/covify launchdtm startdtm))
-(def inproc  (cov/covify startdtm  enddtm))
+(defn waiting [bj-file-name] (cov/covify (launchdtm bj-file-name) (startdtm bj-file-name)))
+(defn inproc  [bj-file-name] (cov/covify (startdtm bj-file-name)  (enddtm bj-file-name)))
 
 (defn- dump-to-csv
-  [cov fname]
+  [cov data-dir fname]
   (let [[dom cnt] cov
         tovec     (map vector dom cnt)
         csv       (string/join "\n" (map (fn [x] (string/join "," x)) tovec))]
@@ -42,11 +42,13 @@
     (println csv)
     (with-open
       [w (clojure.java.io/writer
-          (str dat/data-dir "/" fname)
+          (str data-dir "/" fname)
           :append false)]
            (.write w csv))))
 
 (defn -main
   [& args]
-  (println (str "Processing " dat/bj-file-name))
-  (dump-to-csv inproc "bj_proc.csv"))
+  (println "FIXME :/")
+  ;(println (str "Processing " DATA_DIR_HERE BJ_FILE_NAME_HERE))
+  ;(dump-to-csv inproc DATA_DIR_HERE BJ_FILE_NAME_HERE)
+  )
