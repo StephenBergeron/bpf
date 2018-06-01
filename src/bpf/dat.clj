@@ -4,7 +4,7 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as string]))
 
-(defn dat-files
+(defn locate-dat-files
   [data-dir]
   (sort (filter
          (fn [x] (string/ends-with? x ".dat"))
@@ -12,4 +12,4 @@
 
 (defn bj-file-name
   [data-dir]
-  (str data-dir "/" (first (dat-files data-dir))))
+  (str data-dir "/" (first (locate-dat-files data-dir))))

@@ -1,21 +1,10 @@
 (ns bpf.core
   (:gen-class)
-  (:require [clojure-csv.core :as clojure-csv.core]
-            [clojure.string :as string]
+  (:require [clojure.string :as string]
             [clojure.pprint]
+            [bpf.tsv :as tsv]
             [bpf.cov :as cov]
             [bpf.dat :as dat]))
-
-(defn parse-tsv
-  [fname]
-  (clojure-csv.core/parse-csv (slurp fname) :delimiter \tab))
-
-(defn nth-column
-  [fname column]
-  (let [tabl    (parse-tsv fname)
-        raw-col (map (fn [x] (nth x column nil)) tabl)
-        processed (remove (fn [x] (= "\\N" x)) raw-col)]
-    (remove nil? processed)))
 
 (defn to-epoch
   [s]
@@ -25,10 +14,10 @@
               "yyyy-MM-dd HH:mm:ss") s))]
     (/ ms 1000)))
 
-(defn requestnm  [bj-file-name] (nth-column bj-file-name 2))
-(defn startdtm   [bj-file-name] (sort (map to-epoch (nth-column bj-file-name 17))))
-(defn enddtm     [bj-file-name] (sort (map to-epoch (nth-column bj-file-name 15))))
-(defn launchdtm  [bj-file-name] (sort (map to-epoch (nth-column bj-file-name 3))))
+(defn requestnm  [bj-file-name] (tsv/nth-column bj-file-name 2))
+(defn startdtm   [bj-file-name] (sort (map to-epoch (tsv/nth-column bj-file-name 17))))
+(defn enddtm     [bj-file-name] (sort (map to-epoch (tsv/nth-column bj-file-name 15))))
+(defn launchdtm  [bj-file-name] (sort (map to-epoch (tsv/nth-column bj-file-name 3))))
 
 (defn waiting [bj-file-name] (cov/covify (launchdtm bj-file-name) (startdtm bj-file-name)))
 (defn inproc  [bj-file-name] (cov/covify (startdtm bj-file-name)  (enddtm bj-file-name)))
