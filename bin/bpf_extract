@@ -77,7 +77,7 @@ select count(date_trunc), EXTRACT(EPOCH FROM date_trunc) as epoch, date_trunc fr
 bgp = csvify(conn, bgp_query_3)
 ###
 
-binding.pry
+# binding.pry
 
 
 
