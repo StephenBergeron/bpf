@@ -1,0 +1,92 @@
+#!/usr/bin/env ruby
+# -*-Ruby-*-
+
+require 'pry'
+require 'net/ping'
+require 'pg'
+require 'csv'
+
+# show to the user that there is an issue
+def issue(t)
+  puts "\e[31mERROR: #{t}\e[0m"
+end
+
+def valid_env?(var)
+  if ENV[var].nil?
+    issue("Environment variable not defined: #{var}")
+  end
+  !ENV[var].nil?
+end
+
+if !(
+    valid_env?('db_server') &&
+    valid_env?('db_name') &&
+    valid_env?('db_username') &&
+    valid_env?('db_password') &&
+    valid_env?('CACHEDIR') &&
+    valid_env?('simulation') &&
+    true)
+  return
+end
+
+if !Net::Ping::External.new(ENV["db_server"]).ping?
+  issue("Unable to ping #{ENV['db_server']}")
+  return
+end
+
+conn = PG::Connection.connect(ENV["db_server"],
+                               5444, '', '',
+                               ENV["db_name"],
+                               ENV["db_username"],
+                               ENV["db_password"])
+
+def csvify(conn, sql)
+  res = conn.exec(sql)
+  retval = []
+  retval << res.first.keys
+  res.each{ |tuple| retval << tuple.values}
+  return retval\
+end
+
+tenants_csv =
+  csvify(conn,
+         'SELECT tenant_schema_name FROM common.tenant order by tenant_schema_name')
+
+tenants = tenants_csv.drop(1).flatten
+
+bpf_query = tenants.map { |t| %Q[(select '#{t}' as tenant, * from #{t}.batchjob)]}.join(' union ')
+
+###
+bpf = csvify(conn, bpf_query)
+###
+
+bgp_query_1 = tenants.map { |t|
+  %Q[
+  (select '#{t}' as tenant, personid, date_trunc('minute', last_updated_data_time)
+        from #{t}.totaleventts
+       where last_updated_data_time >  now() - interval '1 week')]}
+
+bgp_query_2 = bgp_query_1.join(' union ')
+
+bgp_query_3 = %Q[
+select count(date_trunc), EXTRACT(EPOCH FROM date_trunc) as epoch, date_trunc from (
+#{bgp_query_2}
+) group by date_trunc order by date_trunc desc]
+
+###
+bgp = csvify(conn, bgp_query_3)
+###
+
+binding.pry
+
+
+
+File.open(%Q[#{ENV["CACHEDIR"]}/#{ENV["simulation"]}/bpf.csv],
+          'w') { |file|
+  content = bpf.drop(1).map{ |x| x.join("\t")}.join("\n")
+  file.write(content) }
+
+File.open(%Q[#{ENV["CACHEDIR"]}/#{ENV["simulation"]}/bgp.csv],
+          'w') { |file|
+  content = bgp.map{ |x| x.join("\t")}.join("\n")
+  file.write(content) }
