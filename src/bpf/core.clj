@@ -14,10 +14,17 @@
               "dd-MMM-yy HH:mm:ss") s))]
     (/ ms 1000)))
 
+(defn usable-epoch [fname col]
+  (sort
+   (map to-epoch
+        (filter
+         (complement clojure.string/blank?)
+         (tsv/nth-column fname col)))))
+
 (defn requestnm  [bj-file-name] (tsv/nth-column bj-file-name 2))
-(defn startdtm   [bj-file-name] (sort (map to-epoch (tsv/nth-column bj-file-name 18))))
-(defn enddtm     [bj-file-name] (sort (map to-epoch (tsv/nth-column bj-file-name 16))))
-(defn launchdtm  [bj-file-name] (sort (map to-epoch (tsv/nth-column bj-file-name 4))))
+(defn startdtm   [bj-file-name] (usable-epoch   bj-file-name 18))
+(defn enddtm     [bj-file-name] (usable-epoch   bj-file-name 16))
+(defn launchdtm  [bj-file-name] (usable-epoch   bj-file-name 4))
 
 (defn- to-csv
   [infile outfile]

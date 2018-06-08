@@ -57,7 +57,7 @@ tenants = tenants_csv.drop(1).flatten
 bpf_query = tenants.map { |t| %Q[(select '#{t}' as tenant, * from #{t}.batchjob)]}.join(' union ')
 
 ###
-bpf = csvify(conn, bpf_query)
+bpf = csvify(conn, %Q[select * from #{bpf_query} order by enddtm desc])
 ###
 
 bgp_query_1 = tenants.map { |t|
