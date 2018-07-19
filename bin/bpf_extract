@@ -45,7 +45,7 @@ def csvify(conn, sql)
   retval = []
   retval << res.first.keys
   res.each{ |tuple| retval << tuple.values}
-  return retval\
+  return retval
 end
 
 tenants_csv =
@@ -64,7 +64,7 @@ bgp_query_1 = tenants.map { |t|
   %Q[
   (select '#{t}' as tenant, personid, date_trunc('minute', last_updated_data_time)
         from #{t}.totaleventts
-       where last_updated_data_time >  now() - interval '1 week')]}
+       where last_updated_data_time >  now() - interval '12 hour')]}
 
 bgp_query_2 = bgp_query_1.join(' union ')
 
