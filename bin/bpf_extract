@@ -43,8 +43,10 @@ conn = PG::Connection.connect(ENV["db_server"],
 def csvify(conn, sql)
   res = conn.exec(sql)
   retval = []
-  retval << res.first.keys
-  res.each{ |tuple| retval << tuple.values}
+  if res.count > 0
+    retval << res.first.keys
+    res.each{ |tuple| retval << tuple.values}
+  end
   return retval
 end
 
@@ -64,7 +66,7 @@ bgp_query_1 = tenants.map { |t|
   %Q[
   (select '#{t}' as tenant, personid, date_trunc('minute', last_updated_data_time)
         from #{t}.totaleventts
-       where last_updated_data_time >  now() - interval '12 hour')]}
+       where last_updated_data_time >  now() - interval '24 hour')]}
 
 bgp_query_2 = bgp_query_1.join(' union ')
 
