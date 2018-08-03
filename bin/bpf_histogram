@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+# -*-Ruby-*-
+
+require 'pry'
+require 'awesome_print'
+require 'csv'
+require 'date'
+require 'histogram/array'
+
+f = ARGV[0]
+
+parsed_file = CSV.read(f, { :col_sep => "\t" })
+
+duration = parsed_file.map{ |r|
+  requestnm = r[3]
+  startdtm  = DateTime.parse(r[18]).to_time.to_i
+  enddtm    = DateTime.parse(r[16]).to_time.to_i
+  enddtm - startdtm
+}
+
+# use Freedman–Diaconis rule
+(bin, freqs) = duration.histogram(:fd)
+
+bin.zip(freqs).map { |v|
+  puts v[0].to_i.to_s + "," + v[1].to_i.to_s
+}
+
+# max = duration.max
+# min = duration.min
+
+
+# binding.pry

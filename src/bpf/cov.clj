@@ -5,7 +5,7 @@
   (cond
     (empty? e) true
     (empty? s) false
-    :else      (< (first s) (first e))))
+    :else      (<= (first s) (first e))))
 
 (defn covify
   [si ei]

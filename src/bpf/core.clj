@@ -21,7 +21,7 @@
          (complement clojure.string/blank?)
          (tsv/nth-column fname col)))))
 
-(defn requestnm  [bj-file-name] (tsv/nth-column bj-file-name 2))
+(defn requestnm  [bj-file-name] (tsv/nth-column bj-file-name 3))
 (defn startdtm   [bj-file-name] (usable-epoch   bj-file-name 18))
 (defn enddtm     [bj-file-name] (usable-epoch   bj-file-name 16))
 (defn launchdtm  [bj-file-name] (usable-epoch   bj-file-name 4))
@@ -48,7 +48,7 @@
     ;; first argument is a directory obtained form the tar file
     (= 2 (count args) ) (to-csv (first args) (second args))
 
-    :else              (println "please specify input directory and output file"))
+    :else              (println "please specify input file and output file"))
 
   ;(dump-to-csv inproc DATA_DIR_HERE BJ_FILE_NAME_HERE)
   )
